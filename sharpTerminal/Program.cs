@@ -20,7 +20,7 @@ namespace sharpTerminal
                 { "rnd", commands.Rnd },
                 { "eval", commands.Eval },
                 { "say", commands.Say },
-
+                { "hist", commands.Hist },
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -33,22 +33,26 @@ namespace sharpTerminal
                 { "rnd", "Generates a random number (1 - 100)" },
                 { "eval", "Evaluates a given mathematical expression" },             // more complex help commands such as "help dt"
                 { "say", "Repeats a given phrase" },
+                { "hist", "Displays the last 10 used commands" },
             };
 
-            commands.SetCommandMap(commandMap, commandDescriptions);
+            List<string> commandLogs = new List<string>();
+
+            commands.SetCommandMap(commandMap, commandDescriptions, commandLogs);
 
             while (Active)
             {
                 Console.Write("Command>");
-                string input = Console.ReadLine().ToLower();
+                string? input = Console.ReadLine()?.ToLower();
 
-                if (commandMap.ContainsKey(input))
-                {
-                    commandMap[input]();
-                }
-                else if (string.IsNullOrEmpty(input))
+                if (string.IsNullOrEmpty(input))
                 {
                     continue;
+                }
+                else if (commandMap.ContainsKey(input))
+                {
+                    commandMap[input]();
+                    commandLogs.Add(input); 
                 }
                 else
                 {
