@@ -1,4 +1,6 @@
-﻿namespace sharpTerminal
+﻿using System.Data;
+
+namespace sharpTerminal
 {
     class Commands
     {
@@ -37,9 +39,45 @@
             Console.Clear();
         }
 
-        public void Time()
+        public void Dt()
         {
-            Console.WriteLine(DateTime.UtcNow);
+            Console.WriteLine($"{DateTime.UtcNow}\n");
+        }
+
+        public void Rnd()
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(1, 101); 
+            Console.WriteLine($"{randomNumber}\n");
+        }
+
+        public void Eval()
+        {
+            Console.Write("Enter a mathematical expression: ");
+            string expression = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(expression))
+            {
+                Console.WriteLine();
+                return;
+            }
+
+            try
+            {
+                var result = new DataTable().Compute(expression, null);
+                Console.WriteLine($"Result: {result}\n");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message}\n");
+            }
+        }
+
+        public void Say()
+        {
+            Console.Write("Enter a phrase to repeat: ");
+            string phrase = Console.ReadLine();
+            Console.WriteLine($"You said: {phrase}\n");
         }
     }
 }

@@ -16,7 +16,11 @@ namespace sharpTerminal
                 { "exit", commands.Exit },
                 { "help", commands.Help },
                 { "clear", commands.Clear },
-                { "time", commands.Time },
+                { "dt", commands.Dt },
+                { "rnd", commands.Rnd },
+                { "eval", commands.Eval },
+                { "say", commands.Say },
+
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -25,7 +29,10 @@ namespace sharpTerminal
                 { "exit", "Exits the program" },
                 { "help", "Displays a list of available commands" },
                 { "clear", "Clears the console" },
-                { "time", "Displays the current time (UTC)" },
+                { "dt", "Displays the current time (UTC)" },
+                { "rnd", "Generates a random number (1 - 100)" },
+                { "eval", "Evaluates a given mathematical expression" },             // more complex help commands such as "help dt"
+                { "say", "Repeats a given phrase" },
             };
 
             commands.SetCommandMap(commandMap, commandDescriptions);
