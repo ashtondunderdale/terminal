@@ -1,45 +1,46 @@
 ﻿using System;
 
-class Program
+
+namespace sharpTerminal 
 {
-    static void Main(string[] args)
+    class Program
     {
-        var commands = new Commands();
-        var commandMap = new Dictionary<string, Action>
+        public static bool Active = true;
+
+        static void Main(string[] args)
         {
-            { "hello", commands.Hello },
-        };
+            var commands = new Commands();
 
-        while (true)
-        {
-            Console.Write("Command: ");
-            string input = Console.ReadLine().ToLower(); 
+            var commandMap = new Dictionary<string, Action>
+            {
+                { "hello", commands.HelloWorld },
+                { "exit", commands.Exit },
+            };
 
-            if (input == "exit")
+            while (Active)
             {
-                break;
-            }
+                Console.Write("Command>");
+                string input = Console.ReadLine().ToLower();
 
-            if (commandMap.ContainsKey(input))
-            {
-                commandMap[input]();
-            }
-            else if (input == "")
-            {
-                continue;
-            }
-            else
-            {
-                Console.WriteLine($"'{input}' is not recognised as a command.\n");
+                if (commandMap.ContainsKey(input))
+                {
+                    commandMap[input]();
+                }
+
+                else if (string.IsNullOrEmpty(input))
+
+                {
+                    continue;
+                }
+
+                else
+                {
+                    Console.WriteLine($"'{input}' is not recognised as a command.\n");
+                }
             }
         }
     }
 }
 
-class Commands
-{
-    public void Hello()
-    {
-        Console.WriteLine("Hello World!\n");
-    }
-}
+
+
