@@ -21,6 +21,8 @@ namespace sharpTerminal
                 { "eval", commands.Eval },
                 { "say", commands.Say },
                 { "hist", commands.Hist },
+                { "beep", commands.Beep },
+                { "tm", commands.Tm },
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -34,6 +36,7 @@ namespace sharpTerminal
                 { "eval", "Evaluates a given mathematical expression" },             // more complex help commands such as "help dt"
                 { "say", "Repeats a given phrase" },
                 { "hist", "Displays the last 10 used commands" },
+                { "tm", "Starts a timer that stops when enter is pressed" },
             };
 
             List<string> commandLogs = new List<string>();

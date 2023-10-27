@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using System.Linq.Expressions;
+using System.Timers;
 
 namespace sharpTerminal
 {
@@ -106,9 +106,27 @@ namespace sharpTerminal
             }
             Console.WriteLine();
         }
+
+        public void Beep()
+        {
+            Console.Beep();
+            Console.WriteLine();
+        }
+
+        public void Tm()
+        {
+            System.Timers.Timer timer = new System.Timers.Timer();
+            Console.WriteLine("Timer started. Press any key to stop...");
+
+            DateTime startTime = DateTime.Now;
+
+            timer.Start();
+            Console.ReadKey();
+            timer.Stop();
+
+            DateTime stopTime = DateTime.Now;
+
+            Console.WriteLine($"Elapsed time: {stopTime - startTime}\n");
+        }
     }
 }
-
-
-
-
