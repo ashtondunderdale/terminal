@@ -47,7 +47,7 @@ namespace sharpTerminal
 
             var terminalSettings = new Dictionary<string, string>
             {
-                { "autoClear", "false" }
+                { "autoClear", "true" }
             };
 
             commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);
@@ -67,7 +67,7 @@ namespace sharpTerminal
                     command();
                     commandLogs.Add($"{DateTime.Now}: {input}");
 
-                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true" && input != "clear")
+                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true" && input != "clear" && input != "exit")
                     {
                         Console.ReadKey();
                         Console.Clear();

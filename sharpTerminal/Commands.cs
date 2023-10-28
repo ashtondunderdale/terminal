@@ -43,8 +43,8 @@ namespace sharpTerminal
         public void Clear()
         {
             if (TerminalSettings.TryGetValue("autoClear", out string? autoClearSetting) && autoClearSetting == "true")
-
             {
+                Console.Clear();
                 return;
             }
 
@@ -124,13 +124,17 @@ namespace sharpTerminal
 
         public static void Tm()
         {
+            DateTime startTime = DateTime.Now;
+
             Console.WriteLine("Timer started. Press any key to stop...");
             Console.ReadKey();
 
-            TimeSpan elapsed = DateTime.Now - DateTime.Now;
+            DateTime stopTime = DateTime.Now;
+            TimeSpan elapsed = stopTime - startTime;
 
             Console.WriteLine($"Elapsed time: {elapsed}\n");
         }
+
 
         public static void Ver() => Console.WriteLine($"sharpTerminal Version>{VERSION}\n");
 
@@ -153,16 +157,26 @@ namespace sharpTerminal
                 {
                     TerminalSettings["autoClear"] = "true";
                     Console.WriteLine("AutoClear set to true\n");
+                    return;
                 }
                 else if (input == "ac false")
                 {
                     TerminalSettings["autoClear"] = "false";
                     Console.WriteLine("AutoClear set to false\n");
+                    ReadClear();
+                    return;
                 }
-                else if (input == "exit")
+                else if (input == "exit" && TerminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true")
                 {
-                    Console.Clear();
-                    break;
+                    Console.Write("Press Enter>");
+                    return;
+                }
+
+                else if (input == "exit" && TerminalSettings.TryGetValue("autoClear", out autoClear) && autoClear == "false")
+                {
+                    Console.Write("Press Enter>");
+                    ReadClear();
+                    return;
                 }
                 else
                 {
