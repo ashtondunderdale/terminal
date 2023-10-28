@@ -1,30 +1,24 @@
-﻿using System.Data;
-using System.Timers;
+﻿using NCalc;
 
 namespace sharpTerminal
 {
     class Commands
     {
-        private Dictionary<string, Action> CommandMap;
-        private Dictionary<string, string> CommandDescription;
-        private List<string> CommandLogs;
+        private Dictionary<string, Action> CommandMap = new();
+        private Dictionary<string, string> CommandDescription = new();
+        private List<string> CommandLogs = new();
 
-        public void SetCommandMap(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescription, List<string> commandLogs)
+        private const string VERSION = "0.0.1";
+        public void CommandConfig(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescription, List<string> commandLogs)
         {
             CommandMap = commandMap;
             CommandDescription = commandDescription;
             CommandLogs = commandLogs;
         }
 
-        public void HelloWorld()
-        {
-            Console.WriteLine("Hello World!\n");
-        }
+        public static void Hello() => Console.WriteLine($"Hello {Environment.MachineName}!\n");
 
-        public void Exit()
-        {
-            Program.Active = false;
-        }
+        public static void Exit() => Program.Active = false;
 
         public void Help()
         {
@@ -32,50 +26,67 @@ namespace sharpTerminal
 
             foreach (var command in CommandMap.Keys)
             {
-                Console.WriteLine($"{command.PadRight(10)} - {CommandDescription[command]}");
+                if (CommandDescription.ContainsKey(command))
+                {
+                    Console.WriteLine($"{command.PadRight(10)} - {CommandDescription[command]}");
+                }
+                else
+                {
+                    Console.WriteLine($"{command.PadRight(10)} - No description for this command");
+                }
             }
             Console.WriteLine();
         }
-        public void Clear()
-        {
-            Console.Clear();
-        }
+        public static void Clear() => Console.Clear();
 
-        public void Dt()
-        {
-            Console.WriteLine($"{DateTime.UtcNow}\n");
-        }
+        public static void Dt() => Console.WriteLine($"{DateTime.UtcNow}\n");
 
-        public void Rnd()
+        public static void Rnd()
         {
-            Random random = new Random();
-            int randomNumber = random.Next(1, 101); 
+            int randomNumber = new Random().Next(1, 101);
             Console.WriteLine($"{randomNumber}\n");
         }
 
-        public void Eval()
+        public static void Eval()
         {
-            Console.Write("Enter a mathematical expression: ");
+            Console.Write("Enter an expression: ");
             string? expression = Console.ReadLine();
 
             if (string.IsNullOrEmpty(expression))
             {
-                Console.WriteLine();
+                Console.WriteLine("Expression is empty.");
                 return;
             }
 
             try
             {
-                var result = new DataTable().Compute(expression, null);
-                Console.WriteLine($"Result: {result}\n");
+                Expression e = new Expression(expression);
+                e.Parameters["true"] = true;
+                e.Parameters["false"] = false;
+
+                object result = e.Evaluate();
+
+                if (result is bool)
+                {
+                    Console.WriteLine("Result: " + result);
+                }
+                else if (result is double)
+                {
+                    Console.WriteLine("Result (as double): " + (double)result);
+                }
+                else
+                {
+                    Console.WriteLine("Result: " + result);
+                }
             }
-            catch (Exception e)
+            catch (EvaluationException ex)
             {
-                Console.WriteLine($"Error: {e.Message}\n");
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
 
-        public void Say()
+
+        public static void Say()
         {
             Console.Write("Enter a phrase to repeat: ");
             string? phrase = Console.ReadLine();
@@ -107,26 +118,20 @@ namespace sharpTerminal
             Console.WriteLine();
         }
 
-        public void Beep()
-        {
-            Console.Beep();
-            Console.WriteLine();
-        }
+        public static void Beep() { Console.Beep(); Console.WriteLine(); }
 
-        public void Tm()
+        public static void Tm()
         {
-            System.Timers.Timer timer = new System.Timers.Timer();
             Console.WriteLine("Timer started. Press any key to stop...");
 
             DateTime startTime = DateTime.Now;
-
-            timer.Start();
             Console.ReadKey();
-            timer.Stop();
-
             DateTime stopTime = DateTime.Now;
 
-            Console.WriteLine($"Elapsed time: {stopTime - startTime}\n");
+            TimeSpan elapsed = stopTime - startTime;
+            Console.WriteLine($"Elapsed time: {elapsed}\n");
         }
+
+        public void Ver() => Console.WriteLine($"sharpTerminal Version -- >{VERSION}");
     }
 }

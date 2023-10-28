@@ -12,17 +12,18 @@ namespace sharpTerminal
             var commands = new Commands();
             var commandMap = new Dictionary<string, Action>
             {
-                { "hello", commands.HelloWorld },
-                { "exit", commands.Exit },
+                { "hello", Commands.Hello },
+                { "exit", Commands.Exit },
                 { "help", commands.Help },
-                { "clear", commands.Clear },
-                { "dt", commands.Dt },
-                { "rnd", commands.Rnd },
-                { "eval", commands.Eval },
-                { "say", commands.Say },
+                { "clear", Commands.Clear },
+                { "dt", Commands.Dt },
+                { "rnd", Commands.Rnd },
+                { "eval", Commands.Eval },
+                { "say", Commands.Say },
                 { "hist", commands.Hist },
-                { "beep", commands.Beep },
-                { "tm", commands.Tm },
+                { "beep", Commands.Beep },
+                { "tm", Commands.Tm },
+                { "ver", commands.Ver },
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -36,12 +37,13 @@ namespace sharpTerminal
                 { "eval", "Evaluates a given mathematical expression" },             // more complex help commands such as "help dt"
                 { "say", "Repeats a given phrase" },
                 { "hist", "Displays the last 10 used commands" },
-                { "tm", "Starts a timer that stops when enter is pressed" },
+                { "beep", "The terminal will beep" },
+                { "ver", "Displays the current version of the terminal" },
             };
 
             List<string> commandLogs = new List<string>();
 
-            commands.SetCommandMap(commandMap, commandDescriptions, commandLogs);
+            commands.CommandConfig(commandMap, commandDescriptions, commandLogs);
 
             while (Active)
             {
