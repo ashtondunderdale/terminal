@@ -1,4 +1,5 @@
 ﻿using NCalc;
+using System.Management;
 
 namespace sharpTerminal
 {
@@ -48,7 +49,7 @@ namespace sharpTerminal
                 return;
             }
 
-            Console.Clear(); 
+            Console.Clear();
         }
 
         public static void Dt() => Console.WriteLine($"{DateTime.UtcNow}\n");
@@ -185,6 +186,80 @@ namespace sharpTerminal
             }
         }
 
+        public static void Sys_os()
+        {
+            Console.WriteLine("Operating System Information:\n");
+
+            try
+            {
+                ObjectQuery osQuery = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+                ManagementObjectSearcher osSearcher = new ManagementObjectSearcher(osQuery);
+                ManagementObjectCollection osCollection = osSearcher.Get();
+
+                foreach (ManagementObject osInfo in osCollection)
+                {
+                    Console.WriteLine("Operating System: " + osInfo["Caption"] + " " + osInfo["Version"]);
+                    Console.WriteLine("System Type: " + osInfo["OSArchitecture"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            Console.WriteLine();
+        }
+
+
+        public static void Sys_cpu()
+        {
+            Console.WriteLine("CPU Information:\n");
+
+            try
+            {
+                ObjectQuery cpuQuery = new ObjectQuery("SELECT * FROM Win32_Processor");
+                ManagementObjectSearcher cpuSearcher = new ManagementObjectSearcher(cpuQuery);
+                ManagementObjectCollection cpuCollection = cpuSearcher.Get();
+
+                foreach (ManagementObject cpuInfo in cpuCollection)
+                {
+                    Console.WriteLine("CPU Manufacturer: " + cpuInfo["Manufacturer"]);
+                    Console.WriteLine("Number of Processors: " + cpuInfo["NumberOfCores"]);
+                    Console.WriteLine("Processor Speed: " + cpuInfo["MaxClockSpeed"] + " MHz");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            Console.WriteLine();
+        }
+
+        public static void Sys_mem()
+        {
+            Console.WriteLine("Memory Information:\n");
+
+            try
+            {
+                ObjectQuery memQuery = new ObjectQuery("SELECT * FROM Win32_ComputerSystem");
+                ManagementObjectSearcher memSearcher = new ManagementObjectSearcher(memQuery);
+                ManagementObjectCollection memCollection = memSearcher.Get();
+
+                foreach (ManagementObject memInfo in memCollection)
+                {
+                    ulong totalPhysicalMemory = Convert.ToUInt64(memInfo["TotalPhysicalMemory"]);
+                    Console.WriteLine("Total Physical Memory: " + (totalPhysicalMemory / (1024 * 1024)) + " MB");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            Console.WriteLine();
+        }
+
         public void ReadClear()
         {
             Console.ReadKey();
@@ -192,3 +267,4 @@ namespace sharpTerminal
         }
     }
 }
+

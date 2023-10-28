@@ -25,6 +25,10 @@ namespace sharpTerminal
                 { "tm", Commands.Tm },
                 { "ver", Commands.Ver },
                 { "set", commands.Set },
+                { "sys os", Commands.Sys_os },
+                { "sys cpu", Commands.Sys_cpu },
+                { "sys mem", Commands.Sys_mem },
+
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -41,13 +45,16 @@ namespace sharpTerminal
                 { "beep", "The terminal will beep" },
                 { "ver", "Displays the current version of the terminal" },
                 { "set", "Opens the settings menu for the terminal" },
+                { "sys os", "Displays info on users os: name, version..." },
+                { "sys cpu", "Displays info on users cpu: cores, speed..." },
+                { "sys mem", "Displays info on users memory: physical memory..." },
             };
 
             List<string> commandLogs = new List<string>();
 
             var terminalSettings = new Dictionary<string, string>
             {
-                { "autoClear", "true" }
+                { "autoClear", "false" }
             };
 
             commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);
