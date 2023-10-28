@@ -7,13 +7,15 @@ namespace sharpTerminal
         private Dictionary<string, Action> CommandMap = new();
         private Dictionary<string, string> CommandDescription = new();
         private List<string> CommandLogs = new();
+        Dictionary<string, string> TerminalSettings = new();
 
         private const string VERSION = "0.0.1";
-        public void CommandConfig(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescription, List<string> commandLogs)
+        public void CommandConfig(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescription, List<string> commandLogs, Dictionary<string, string> terminalSettings)
         {
             CommandMap = commandMap;
             CommandDescription = commandDescription;
             CommandLogs = commandLogs;
+            TerminalSettings = terminalSettings;
         }
 
         public static void Hello() => Console.WriteLine($"Hello {Environment.MachineName}!\n");
@@ -37,15 +39,21 @@ namespace sharpTerminal
             }
             Console.WriteLine();
         }
-        public static void Clear() => Console.Clear();
+
+        public void Clear()
+        {
+            if (TerminalSettings.TryGetValue("autoClear", out string? autoClearSetting) && autoClearSetting == "true")
+
+            {
+                return;
+            }
+
+            Console.Clear(); 
+        }
 
         public static void Dt() => Console.WriteLine($"{DateTime.UtcNow}\n");
 
-        public static void Rnd()
-        {
-            int randomNumber = new Random().Next(1, 101);
-            Console.WriteLine($"{randomNumber}\n");
-        }
+        public static void Rnd() => Console.WriteLine(new Random().Next(1, 101));
 
         public static void Eval()
         {
@@ -61,6 +69,7 @@ namespace sharpTerminal
             try
             {
                 Expression e = new Expression(expression);
+
                 e.Parameters["true"] = true;
                 e.Parameters["false"] = false;
 
@@ -68,36 +77,29 @@ namespace sharpTerminal
 
                 if (result is bool)
                 {
-                    Console.WriteLine("Result: " + result);
+                    Console.WriteLine($"Result: {result}\n");
                 }
                 else if (result is double)
                 {
-                    Console.WriteLine("Result (as double): " + (double)result);
+                    Console.WriteLine($"Result: {(double)result}\n");
                 }
                 else
                 {
-                    Console.WriteLine("Result: " + result);
+                    Console.WriteLine($"Result: {result}\n");
                 }
             }
             catch (EvaluationException ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine($"Result: {ex.Message}\n");
             }
         }
-
 
         public static void Say()
         {
             Console.Write("Enter a phrase to repeat: ");
+
             string? phrase = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(phrase))
-            {
-                Console.WriteLine();
-                return;
-            }
-
-            Console.WriteLine($"You said: {phrase}\n");
+            if (!string.IsNullOrEmpty(phrase)) Console.WriteLine($"You said: {phrase}\n");
         }
 
         public void Hist()
@@ -123,15 +125,56 @@ namespace sharpTerminal
         public static void Tm()
         {
             Console.WriteLine("Timer started. Press any key to stop...");
-
-            DateTime startTime = DateTime.Now;
             Console.ReadKey();
-            DateTime stopTime = DateTime.Now;
 
-            TimeSpan elapsed = stopTime - startTime;
+            TimeSpan elapsed = DateTime.Now - DateTime.Now;
+
             Console.WriteLine($"Elapsed time: {elapsed}\n");
         }
 
-        public void Ver() => Console.WriteLine($"sharpTerminal Version -- >{VERSION}");
+        public static void Ver() => Console.WriteLine($"sharpTerminal Version>{VERSION}\n");
+
+        public void Set()
+        {
+            Console.Clear();
+            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["autoClear"]}\n");
+
+            while (true)
+            {
+                Console.Write("Command>");
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(input))
+                {
+                    continue;
+                }
+
+                if (input == "ac true")
+                {
+                    TerminalSettings["autoClear"] = "true";
+                    Console.WriteLine("AutoClear set to true\n");
+                }
+                else if (input == "ac false")
+                {
+                    TerminalSettings["autoClear"] = "false";
+                    Console.WriteLine("AutoClear set to false\n");
+                }
+                else if (input == "exit")
+                {
+                    Console.Clear();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine($"'{input}' is not recognized as a command.\n");
+                }
+            }
+        }
+
+        public void ReadClear()
+        {
+            Console.ReadKey();
+            Console.Clear();
+        }
     }
 }

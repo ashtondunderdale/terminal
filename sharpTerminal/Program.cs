@@ -15,7 +15,7 @@ namespace sharpTerminal
                 { "hello", Commands.Hello },
                 { "exit", Commands.Exit },
                 { "help", commands.Help },
-                { "clear", Commands.Clear },
+                { "clear", commands.Clear },
                 { "dt", Commands.Dt },
                 { "rnd", Commands.Rnd },
                 { "eval", Commands.Eval },
@@ -23,7 +23,8 @@ namespace sharpTerminal
                 { "hist", commands.Hist },
                 { "beep", Commands.Beep },
                 { "tm", Commands.Tm },
-                { "ver", commands.Ver },
+                { "ver", Commands.Ver },
+                { "set", commands.Set },
             };
 
             var commandDescriptions = new Dictionary<string, string>
@@ -34,16 +35,22 @@ namespace sharpTerminal
                 { "clear", "Clears the console" },
                 { "dt", "Displays the current time (UTC)" },
                 { "rnd", "Generates a random number (1 - 100)" },
-                { "eval", "Evaluates a given mathematical expression" },             // more complex help commands such as "help dt"
-                { "say", "Repeats a given phrase" },
+                { "eval", "Evaluates a given mathematical expression" },            // more complex help commands such as "help dt"
+                { "say", "Repeats a given phrase" },                                // verhist
                 { "hist", "Displays the last 10 used commands" },
                 { "beep", "The terminal will beep" },
                 { "ver", "Displays the current version of the terminal" },
+                { "set", "Opens the settings menu for the terminal" },
             };
 
             List<string> commandLogs = new List<string>();
 
-            commands.CommandConfig(commandMap, commandDescriptions, commandLogs);
+            var terminalSettings = new Dictionary<string, string>
+            {
+                { "autoClear", "false" }
+            };
+
+            commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);
 
             while (Active)
             {
@@ -54,14 +61,28 @@ namespace sharpTerminal
                 {
                     continue;
                 }
-                else if (commandMap.ContainsKey(input))
+
+                else if (commandMap.TryGetValue(input, out Action? command))
                 {
-                    commandMap[input]();
-                    commandLogs.Add(input); 
+                    command();
+                    commandLogs.Add($"{DateTime.Now}: {input}");
+
+                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true" && input != "clear")
+                    {
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
                 }
+
                 else
                 {
                     Console.WriteLine($"'{input}' is not recognized as a command.\n");
+
+                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true")
+                    {
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
                 }
             }
         }
