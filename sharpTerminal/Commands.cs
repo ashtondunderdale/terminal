@@ -6,15 +6,15 @@ namespace sharpTerminal
     class Commands
     {
         private Dictionary<string, Action> CommandMap = new();
-        private Dictionary<string, string> CommandDescription = new();
+        private Dictionary<string, string> CommandDescriptions = new();
         private List<string> CommandLogs = new();
         Dictionary<string, string> TerminalSettings = new();
 
         private const string VERSION = "0.0.1";
-        public void CommandConfig(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescription, List<string> commandLogs, Dictionary<string, string> terminalSettings)
+        public void CommandConfig(Dictionary<string, Action> commandMap, Dictionary<string, string> commandDescriptions, List<string> commandLogs, Dictionary<string, string> terminalSettings)
         {
             CommandMap = commandMap;
-            CommandDescription = commandDescription;
+            CommandDescriptions = commandDescriptions;
             CommandLogs = commandLogs;
             TerminalSettings = terminalSettings;
         }
@@ -27,16 +27,9 @@ namespace sharpTerminal
         {
             Console.WriteLine("List of Commands:\n");
 
-            foreach (var command in CommandMap.Keys)
+            foreach (var commandDesc in CommandDescriptions.Keys)
             {
-                if (CommandDescription.ContainsKey(command))
-                {
-                    Console.WriteLine($"{command.PadRight(10)} - {CommandDescription[command]}");
-                }
-                else
-                {
-                    Console.WriteLine($"{command.PadRight(10)} - No description for this command");
-                }
+                Console.WriteLine($"{commandDesc.PadRight(20)} - {CommandDescriptions[commandDesc]}");
             }
             Console.WriteLine();
         }
