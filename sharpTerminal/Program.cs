@@ -48,6 +48,11 @@ namespace sharpTerminal
                 { "sys os", "Displays info on users os: name, version..." },
                 { "sys cpu", "Displays info on users cpu: cores, speed..." },
                 { "sys mem", "Displays info on users memory: physical memory..." },
+                { "ac true/false", "Clears terminal after every command" },
+                { "th true/false", "Decides whether 'hist' will track commands" },
+                { "tc 'colour'", "changes text colour for terminal" },
+                { "bc 'colour'", "changes background colour for terminal" },
+
             };
 
             List<string> commandLogs = new List<string>();
@@ -57,6 +62,7 @@ namespace sharpTerminal
                 { "ac", "false" },
                 { "th", "true" },
                 { "tc", "white" },
+                { "bc", "black" },
             };
 
             commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);

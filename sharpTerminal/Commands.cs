@@ -153,7 +153,11 @@ namespace sharpTerminal
         public void Set()
         {
             Console.Clear();
-            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["ac"]}\n  TrackHist> {TerminalSettings["th"]}\n");
+            Console.WriteLine($"Settings>\n\n  " +
+                $"AutoClear>           {TerminalSettings["ac"]}\n  " +
+                $"TrackHistory>        {TerminalSettings["th"]}\n  " +
+                $"TextColour>          {TerminalSettings["tc"]}\n  " +
+                $"BackgroundColour>    {TerminalSettings["bc"]}\n");
 
             while (true)
             {
@@ -167,8 +171,8 @@ namespace sharpTerminal
 
                 if (input == "ac true" || input == "ac false" || input == "th true" || input == "th false")
                 {
-                    string settingKey = input.Substring(0, 2); 
-                    string settingValue = input.Substring(3); 
+                    string settingKey = input.Substring(0, 2);
+                    string settingValue = input.Substring(3);
 
                     TerminalSettings[settingKey] = settingValue;
 
@@ -181,6 +185,46 @@ namespace sharpTerminal
                     ReadClear();
 
                     return;
+                }
+                else if (input.StartsWith("bc "))
+                {
+                    string color = input.Substring(3); 
+                    if (IsConsoleColorValid(color))
+                    {
+                        TerminalSettings["bc"] = color;
+                        Console.BackgroundColor = GetConsoleColorFromString(color);
+                        Console.Clear();
+                        Console.ForegroundColor = GetConsoleColorFromString(TerminalSettings["tc"]);
+                        Console.WriteLine($"Background color set to {color}");
+
+                        if (TerminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true")
+                        {
+                            return;
+                        }
+                        ReadClear();
+
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid background color: {color}.");
+                    }
+                }
+                else if (input.StartsWith("tc "))
+                {
+                    string color = input.Substring(3);
+                    if (IsConsoleColorValid(color))
+                    {
+                        TerminalSettings["tc"] = color;
+                        Console.ForegroundColor = GetConsoleColorFromString(color);
+                        Console.WriteLine($"Text colour set to {color}");
+                        ReadClear();
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid text colour: {color}.");
+                    }
                 }
                 else if (TerminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true" && input == "exit")
                 {
@@ -201,6 +245,20 @@ namespace sharpTerminal
             }
         }
 
+        private bool IsConsoleColorValid(string color)
+        {
+            try
+            {
+                Enum.Parse<ConsoleColor>(color, true); 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private ConsoleColor GetConsoleColorFromString(string color) => Enum.Parse<ConsoleColor>(color, true); 
 
         public static void Sys_os()
         {
