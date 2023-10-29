@@ -54,7 +54,8 @@ namespace sharpTerminal
 
             var terminalSettings = new Dictionary<string, string>
             {
-                { "autoClear", "false" }
+                { "autoClear", "false" },
+                { "trackHist", "true" },
             };
 
             commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);
@@ -72,7 +73,11 @@ namespace sharpTerminal
                 else if (commandMap.TryGetValue(input, out Action? command))
                 {
                     command();
-                    commandLogs.Add($"{DateTime.Now}: {input}");
+
+                    if (terminalSettings.TryGetValue("trackHist", out string? trackhist) && trackhist == "true" && input != "exit")
+                    {
+                        commandLogs.Add($"{DateTime.Now}: {input}");
+                    }
 
                     if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true" && input != "clear" && input != "exit")
                     {

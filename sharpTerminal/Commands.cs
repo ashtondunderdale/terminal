@@ -105,19 +105,30 @@ namespace sharpTerminal
 
         public void Hist()
         {
-            if (CommandLogs.Count == 0)
+            if (TerminalSettings.TryGetValue("trackHist", out string? trackHist) && trackHist == "true")
             {
-                Console.WriteLine("Command History is empty\n");
-                return;
+                if (CommandLogs.Count == 0)
+                {
+                    Console.WriteLine("Command History is empty\n");
+                    return;
+                }
+                else
+                {
+                    int countToDisplay = Math.Min(10, CommandLogs.Count);
+                    int startIndex = CommandLogs.Count - countToDisplay;
+
+                    for (int i = startIndex; i < CommandLogs.Count; i++)
+                    {
+                        Console.WriteLine(CommandLogs[i]);
+                    }
+                }
+            }
+            else
+            {
+                CommandLogs.Clear();
+                Console.WriteLine("History is not being tracked");
             }
 
-            int countToDisplay = Math.Min(10, CommandLogs.Count);
-            int startIndex = CommandLogs.Count - countToDisplay;
-
-            for (int i = startIndex; i < CommandLogs.Count; i++)
-            {
-                Console.WriteLine(CommandLogs[i]);
-            }
             Console.WriteLine();
         }
 
@@ -142,7 +153,7 @@ namespace sharpTerminal
         public void Set()
         {
             Console.Clear();
-            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["autoClear"]}\n");
+            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["autoClear"]}\n  TrackHist> {TerminalSettings["trackHist"]}\n");
 
             while (true)
             {
@@ -167,6 +178,21 @@ namespace sharpTerminal
                     ReadClear();
                     return;
                 }
+                else if (input == "th true")
+                {
+                    TerminalSettings["trackHist"] = "true";
+                    Console.WriteLine("TrackHist set to true\n");
+                    ReadClear();
+                    return;
+                }
+                else if (input == "th false")
+                {
+                    TerminalSettings["trackHist"] = "false";
+                    Console.WriteLine("TrackHist set to false\n");
+                    ReadClear();
+                    return;
+                }
+
                 else if (input == "exit" && TerminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true")
                 {
                     Console.Write("Press Enter>");
@@ -192,7 +218,7 @@ namespace sharpTerminal
 
             try
             {
-                ObjectQuery osQuery = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+                ObjectQuery osQuery = new("SELECT * FROM Win32_OperatingSystem");
                 ManagementObjectSearcher osSearcher = new ManagementObjectSearcher(osQuery);
                 ManagementObjectCollection osCollection = osSearcher.Get();
 
