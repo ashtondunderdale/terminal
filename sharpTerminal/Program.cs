@@ -54,8 +54,9 @@ namespace sharpTerminal
 
             var terminalSettings = new Dictionary<string, string>
             {
-                { "autoClear", "false" },
-                { "trackHist", "true" },
+                { "ac", "false" },
+                { "th", "true" },
+                { "tc", "white" },
             };
 
             commands.CommandConfig(commandMap, commandDescriptions, commandLogs, terminalSettings);
@@ -74,12 +75,12 @@ namespace sharpTerminal
                 {
                     command();
 
-                    if (terminalSettings.TryGetValue("trackHist", out string? trackhist) && trackhist == "true" && input != "exit")
+                    if (terminalSettings.TryGetValue("th", out string? trackhist) && trackhist == "true" && input != "exit")
                     {
                         commandLogs.Add($"{DateTime.Now}: {input}");
                     }
 
-                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true" && input != "clear" && input != "exit")
+                    if (terminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true" && input != "clear" && input != "exit")
                     {
                         Console.ReadKey();
                         Console.Clear();
@@ -90,7 +91,7 @@ namespace sharpTerminal
                 {
                     Console.WriteLine($"'{input}' is not recognized as a command.\n");
 
-                    if (terminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true")
+                    if (terminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true")
                     {
                         Console.ReadKey();
                         Console.Clear();

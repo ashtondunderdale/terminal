@@ -105,7 +105,7 @@ namespace sharpTerminal
 
         public void Hist()
         {
-            if (TerminalSettings.TryGetValue("trackHist", out string? trackHist) && trackHist == "true")
+            if (TerminalSettings.TryGetValue("th", out string? trackHist) && trackHist == "true")
             {
                 if (CommandLogs.Count == 0)
                 {
@@ -153,7 +153,7 @@ namespace sharpTerminal
         public void Set()
         {
             Console.Clear();
-            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["autoClear"]}\n  TrackHist> {TerminalSettings["trackHist"]}\n");
+            Console.WriteLine($"Settings>\n\n  AutoClear> {TerminalSettings["ac"]}\n  TrackHist> {TerminalSettings["th"]}\n");
 
             while (true)
             {
@@ -165,41 +165,30 @@ namespace sharpTerminal
                     continue;
                 }
 
-                if (input == "ac true")
+                if (input == "ac true" || input == "ac false" || input == "th true" || input == "th false")
                 {
-                    TerminalSettings["autoClear"] = "true";
-                    Console.WriteLine("AutoClear set to true\n");
-                    return;
-                }
-                else if (input == "ac false")
-                {
-                    TerminalSettings["autoClear"] = "false";
-                    Console.WriteLine("AutoClear set to false\n");
-                    ReadClear();
-                    return;
-                }
-                else if (input == "th true")
-                {
-                    TerminalSettings["trackHist"] = "true";
-                    Console.WriteLine("TrackHist set to true\n");
-                    ReadClear();
-                    return;
-                }
-                else if (input == "th false")
-                {
-                    TerminalSettings["trackHist"] = "false";
-                    Console.WriteLine("TrackHist set to false\n");
-                    ReadClear();
-                    return;
-                }
+                    string settingKey = input.Substring(0, 2); 
+                    string settingValue = input.Substring(3); 
 
-                else if (input == "exit" && TerminalSettings.TryGetValue("autoClear", out string? autoClear) && autoClear == "true")
+                    TerminalSettings[settingKey] = settingValue;
+
+                    Console.WriteLine($"{settingKey} set to {settingValue}");
+
+                    if (TerminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true")
+                    {
+                        return;
+                    }
+                    ReadClear();
+
+                    return;
+                }
+                else if (TerminalSettings.TryGetValue("ac", out string? autoClear) && autoClear == "true" && input == "exit")
                 {
                     Console.Write("Press Enter>");
+
                     return;
                 }
-
-                else if (input == "exit" && TerminalSettings.TryGetValue("autoClear", out autoClear) && autoClear == "false")
+                else if (TerminalSettings.TryGetValue("ac", out autoClear) && autoClear == "false" && input == "exit")
                 {
                     Console.Write("Press Enter>");
                     ReadClear();
@@ -211,6 +200,7 @@ namespace sharpTerminal
                 }
             }
         }
+
 
         public static void Sys_os()
         {
