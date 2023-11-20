@@ -26,9 +26,9 @@ partial class Terminal
         outputBox.BackColor = Color.Black;
         outputBox.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point);
         outputBox.ForeColor = Color.LightGray;
-        outputBox.Location = new Point(12, 12);
+        outputBox.Location = new Point(-1, 0);
         outputBox.Name = "outputBox";
-        outputBox.Size = new Size(1345, 558);
+        outputBox.Size = new Size(1372, 570);
         outputBox.TabIndex = 0;
         outputBox.Text = "";
         // 
@@ -58,7 +58,7 @@ partial class Terminal
         Controls.Add(label1);
         Controls.Add(commandBox);
         Controls.Add(outputBox);
-        Name = "Sharp";
+        Name = "Terminal";
         Text = "Sharp";
         ResumeLayout(false);
         PerformLayout();

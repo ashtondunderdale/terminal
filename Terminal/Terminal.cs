@@ -16,7 +16,7 @@ public partial class Terminal : Form
         if (e.KeyCode == Keys.Enter)
         {
             e.SuppressKeyPress = true;
-            string input = commandBox.Text.Trim();
+            string input = commandBox.Text.Trim().ToLower();
 
             if (string.IsNullOrEmpty(input))
             {

@@ -12,29 +12,36 @@
 
         public static readonly Dictionary<string, Action<string>> CommandMap = new()
         {
-            { "hello", (_) => Hello() },
+            { "hey", (_) => Hey() },
+            { "bye", (_) => Bye() },
             { "help", (_) => Help() },
             { "clear", (_) => Clear() },
+            { "exit", (arg) => Exit() },
             { "dir", (arg) => Dir() },
             { "ls", (arg) => Ls() },
             { "en", (arg) => En(arg) },
             { "re", (arg) => Re() },
+
         };
 
         public static readonly Dictionary<string, string> CommandDescriptions = new()
         {
-            { "HELLO", "Greets the user" },
+            { "HEY", "Greets the user" },
+            { "BYE", "Says goodbye to the user" },
             { "HELP", "Lists a description for each command" },
             { "CLEAR", "Clears the terminal of all text" },
+            { "EXIT", "Closes the application" },
             { "DIR", "Displays the current directory" },
             { "LS", "lists all files and folders in current directory" },
             { "EN", "Enters a directory from a given argument" },
-            { "RE", "retreats out one directory level" },
+            { "RE", "Retreats out one directory level" },
             // CRT filename
             // DEL filename + confirmation
         };
 
-        public static void Hello() => Helpers.OutputInformation(Terminal.outputBox, "Hello, Ashton!\n");
+        public static void Hey() => Helpers.OutputInformation(Terminal.outputBox, "Hey, Ashton!\n");
+
+        public static void Bye() => Helpers.OutputInformation(Terminal.outputBox, "Goodbye!\n");
 
         public static void Help()
         {
@@ -55,6 +62,8 @@
             Terminal.outputBox.Clear();
             Terminal.outputBox.AppendText("Sharp terminal [Version 0.0.1]\n\n");
         }
+
+        public static void Exit() => Environment.Exit(0);
 
         public static void Dir() => Helpers.OutputInformation(Terminal.outputBox, $"Current path: {_currentPath}\n");
 
