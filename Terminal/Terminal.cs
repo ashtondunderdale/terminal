@@ -20,7 +20,7 @@ public partial class Terminal : Form
 
             if (string.IsNullOrEmpty(input))
             {
-                outputBox.SelectionColor = Color.Gold;
+                outputBox.SelectionColor = Color.White;
                 outputBox.AppendText("> ");
                 outputBox.AppendText(Environment.NewLine);
                 outputBox.SelectionColor = outputBox.ForeColor;

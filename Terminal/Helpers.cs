@@ -4,12 +4,12 @@ internal class Helpers
 {
     public static void OutputSuccess(RichTextBox outputBox, string message)
     {
-        AppendColoredText(outputBox, Color.Green, "+", message);
+        AppendColoredText(outputBox, Color.DarkSlateBlue, "+", message);
     }
 
     public static void OutputError(RichTextBox outputBox, string message)
     {
-        AppendColoredText(outputBox, Color.Red, "-", message);
+        AppendColoredText(outputBox, Color.IndianRed, "-", message);
     }
 
     public static void OutputInformation(RichTextBox outputBox, string message)
