@@ -54,7 +54,7 @@
 
         #endregion
 
-        private RichTextBox outputBox;
-        private RichTextBox commandBox;
+        public static RichTextBox outputBox;
+        public static RichTextBox commandBox;
     }
 }

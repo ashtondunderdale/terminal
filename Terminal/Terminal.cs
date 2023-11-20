@@ -12,6 +12,7 @@ namespace Terminal
             commandBox.KeyDown += InputTextBox_KeyDown;
 
             outputBox.ReadOnly = true;
+            outputBox.AppendText("Sharp terminal [Version 0.0.1]\n\n");
         }
 
         private void InputTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -19,10 +20,9 @@ namespace Terminal
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
+                string input = commandBox.Text.Trim();
 
-                string command = commandBox.Text.Trim();
-
-                if (string.IsNullOrEmpty(command))
+                if (string.IsNullOrEmpty(input))
                 {
                     outputBox.SelectionColor = Color.Gold;
                     outputBox.AppendText("> ");
@@ -30,55 +30,18 @@ namespace Terminal
                     outputBox.SelectionColor = outputBox.ForeColor;
                 }
 
-/*                if (command is not "")
+                var commandMap = new Dictionary<string, Action>
                 {
-                    outputBox.SelectionColor = Color.Gold;
-                    outputBox.AppendText(">");
-                    outputBox.SelectionColor = outputBox.ForeColor;
-                    outputBox.AppendText($" {command}\n");
-                }*/
+                    { "hello", Commands.Hello },
+                };
 
-                if (string.Equals(command, "hello", StringComparison.OrdinalIgnoreCase))
-                {
-                    OutputInformation("Hello User!");
-                }
-                else if (!string.IsNullOrEmpty(command))
-                {
-                    OutputError($"\'{command}\' is not recognised as a command");
-                }
+
+                if (commandMap.TryGetValue(input, out Action? command)) command();
+                else if (input != "") Helpers.OutputError(outputBox, $"{input} is not recognised as a valid command.");
+
                 commandBox.Clear();
                 outputBox.ScrollToCaret();
             }
-        }
-
-        private void OutputSuccess(string message)
-        {
-            string successSymbol = "+";
-
-            outputBox.SelectionColor = Color.Green;
-            outputBox.AppendText($"{successSymbol} ");
-            outputBox.SelectionColor = outputBox.ForeColor;
-            outputBox.AppendText($"{message}" + Environment.NewLine + "\n");
-        }
-
-        private void OutputError(string message)
-        {
-            string errorSymbol = "-";
-
-            outputBox.SelectionColor = Color.Red;
-            outputBox.AppendText($"{errorSymbol} ");
-            outputBox.SelectionColor = outputBox.ForeColor;
-            outputBox.AppendText($"{message}" + Environment.NewLine + "\n");
-        }
-
-        private void OutputInformation(string message)
-        {
-            string informationSymbol = "i";
-
-            outputBox.SelectionColor = Color.CornflowerBlue;
-            outputBox.AppendText($"{informationSymbol} ");
-            outputBox.SelectionColor = outputBox.ForeColor;
-            outputBox.AppendText($"{message}" + Environment.NewLine + "\n");
         }
     }
 }
