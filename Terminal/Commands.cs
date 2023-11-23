@@ -1,4 +1,6 @@
-﻿namespace Terminal
+﻿using System.Net.NetworkInformation;
+
+namespace Terminal
 {
     public static class Commands
     {
@@ -21,6 +23,7 @@
             { "ls", (arg) => Ls() },
             { "en", (arg) => En(arg) },
             { "re", (arg) => Re() },
+            { "ping", (arg) => Ping(arg) },
 
         };
 
@@ -35,6 +38,7 @@
             { "LS", "lists all files and folders in current directory" },
             { "EN", "Enters a directory from a given argument" },
             { "RE", "Retreats out one directory level" },
+            { "PING", "Pings an ip address, returns a response" },
             // CRT filename
             // DEL filename + confirmation
         };
@@ -127,6 +131,37 @@
             }
 
             Terminal.outputBox.AppendText("\n");
+        }
+
+        public static void Ping(string args) 
+        {
+            bool pingable = false;
+            Ping? pinger = null;
+
+            try
+            {
+                pinger = new Ping();
+
+                PingReply reply = pinger.Send(args);
+                pingable = reply.Status == IPStatus.Success;
+
+                Helpers.OutputSuccess(Terminal.outputBox, $"Successfully pung {args}");
+                Helpers.OutputSuccess(Terminal.outputBox, $"Response: {pingable}\n");
+
+            }
+            catch (Exception e)
+            {
+                Helpers.OutputError(Terminal.outputBox, $"Could not ping {args}");
+                Helpers.OutputError(Terminal.outputBox, $"{e.Message}\n");
+
+            }
+            finally
+            {
+                if (pinger != null)
+                {
+                    pinger.Dispose();
+                }
+            }
         }
     }
 }
