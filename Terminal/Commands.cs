@@ -24,6 +24,7 @@ namespace Terminal
             { "en", (arg) => En(arg) },
             { "re", (arg) => Re() },
             { "ping", (arg) => Ping(arg) },
+            { "del", (arg) => Del(arg) },
 
         };
 
@@ -39,8 +40,7 @@ namespace Terminal
             { "EN", "Enters a directory from a given argument" },
             { "RE", "Retreats out one directory level" },
             { "PING", "Pings an ip address, returns a response" },
-            // CRT filename
-            // DEL filename + confirmation
+            { "DEL", "Creates a directory in current directory" },
         };
 
         public static void Hey() => Helpers.OutputInformation(Terminal.outputBox, "Hey, Ashton!\n");
@@ -163,5 +163,37 @@ namespace Terminal
                 }
             }
         }
+        public static void Del(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Helpers.OutputError(Terminal.outputBox, "Directory path is required\n");
+                return;
+            }
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                    Helpers.OutputSuccess(Terminal.outputBox, $"Directory {path} is successfully deleted.\n");
+                }
+                else if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    Helpers.OutputSuccess(Terminal.outputBox, $"File {path} is successfully deleted.\n");
+                }
+                else
+                {
+                    Helpers.OutputError(Terminal.outputBox, $"The specified path {path} does not exist.\n");
+                }
+            }
+            catch (Exception e)
+            {
+                Helpers.OutputError(Terminal.outputBox, $"Error deleting {path}:\n");
+                Helpers.OutputError(Terminal.outputBox, e.Message + "\n");
+            }
+        }
+
     }
 }
