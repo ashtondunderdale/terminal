@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 
 namespace Terminal
 {
@@ -25,7 +26,8 @@ namespace Terminal
             { "re", (arg) => Re() },
             { "ping", (arg) => Ping(arg) },
             { "del", (arg) => Del(arg) },
-
+            { "mkdir", (arg) => Mkdir(arg) },
+            { "sys", (arg) => Sys() },
         };
 
         public static readonly Dictionary<string, string> CommandDescriptions = new()
@@ -40,7 +42,9 @@ namespace Terminal
             { "EN", "Enters a directory from a given argument" },
             { "RE", "Retreats out one directory level" },
             { "PING", "Pings an ip address, returns a response" },
-            { "DEL", "Creates a directory in current directory" },
+            { "DEL", "Deletes a directory in current directory" },
+            { "MKDIR", "Creates a directory in current directory" },
+            { "SYS", "Displays information about the users system" },
         };
 
         public static void Hey() => Helpers.OutputInformation(Terminal.outputBox, "Hey, Ashton!\n");
@@ -195,5 +199,57 @@ namespace Terminal
             }
         }
 
+        public static void Mkdir(string dirNam)
+        {
+            if (string.IsNullOrEmpty(dirNam))
+            {
+                Helpers.OutputError(Terminal.outputBox, "File name is required\n");
+                return;
+            }
+
+            try
+            {
+                string dirPath = Path.Combine(_currentPath, dirNam);
+
+                if (!File.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                    Helpers.OutputSuccess(Terminal.outputBox, $"File {dirPath} is successfully created.\n");
+                }
+                else
+                {
+                    Helpers.OutputError(Terminal.outputBox, $"File {dirPath} already exists.\n");
+                }
+            }
+            catch (Exception e)
+            {
+                Helpers.OutputError(Terminal.outputBox, $"Error creating file {dirNam}:\n");
+                Helpers.OutputError(Terminal.outputBox, e.Message + "\n");
+            }
+        }
+
+        public static void Sys()
+        {
+            string userName = Environment.UserName;
+            Helpers.OutputInformation(Terminal.outputBox, $"User Name: {userName}");
+
+            string machineName = Environment.MachineName;
+            Helpers.OutputInformation(Terminal.outputBox, $"Machine Name: {machineName}\n");
+
+            OperatingSystem os = Environment.OSVersion;
+            Helpers.OutputInformation(Terminal.outputBox, $"OS: {os.VersionString}\n");
+
+            string processorArchitecture = RuntimeInformation.OSArchitecture.ToString();
+            Helpers.OutputInformation(Terminal.outputBox, $"Processor Architecture: {processorArchitecture}");
+            int processorCount = Environment.ProcessorCount;
+            Helpers.OutputInformation(Terminal.outputBox, $"Processor Count: {processorCount}");
+            long availableMemory = GC.GetTotalMemory(false);
+            Helpers.OutputInformation(Terminal.outputBox, $"Available Memory: {availableMemory / (1024 * 1024)} MB\n")
+                ;
+            string frameworkVersion = RuntimeInformation.FrameworkDescription;
+            Helpers.OutputInformation(Terminal.outputBox, $".NET Framework Version: {frameworkVersion}");
+            string runtimeVersion = Environment.Version.ToString();
+            Helpers.OutputInformation(Terminal.outputBox, $".NET Runtime Version: {runtimeVersion}\n");
+        }
     }
 }
